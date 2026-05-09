@@ -88,11 +88,11 @@ const FeaturedProject = () => {
                   transition={transition}
                   className="project-info"
                 >
-                  <h4>PEI Seafood</h4>
-                  <h4>2019</h4>
+                  <h4>Meridian Pictures</h4>
+                  <h4>2026</h4>
                 </motion.div>
                 <ProjectTitle>
-                  NOT <br /> HUMBLE
+                  NO <br /> QUIET
                   <span className="arrow">
                     <Arrow animate={controlsArrow} transition={transition} />
                   </span>

@@ -143,26 +143,26 @@ const Menu = () => {
               <FooterText
                 className="link"
                 as="a"
-                href="mailto:info@furrow.studio"
+                href="mailto:hello@cutaway.studio"
                 onMouseEnter={addCursorBorder}
                 onMouseLeave={removeCursorBorder}
               >
-                info@furrow.studio
+                hello@cutaway.studio
               </FooterText>
               <FooterText
                 className="link"
                 as="a"
-                href="tel:+1.902.417.0634"
+                href="tel:+1.310.555.0194"
                 onMouseEnter={addCursorBorder}
                 onMouseLeave={removeCursorBorder}
               >
-                +1.902.417.0634
+                +1.310.555.0194
               </FooterText>
-              <FooterText className="copyright">© Furrow 2020</FooterText>
+              <FooterText className="copyright">© Cutaway 2026</FooterText>
               {isMobile && (
                 <Address>
                   <FooterText>
-                    15 Camburhill Ct Unit C<br /> Charlottetown, PE C1E 0E2
+                    1200 Cahuenga Blvd Suite 4<br /> Los Angeles, CA 90038
                   </FooterText>
                 </Address>
               )}

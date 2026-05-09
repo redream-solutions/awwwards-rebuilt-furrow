@@ -74,7 +74,7 @@ const AppBar = props => {
     >
       <Container>
         <Link href="/" passHref>
-          <StyledLink title="Furrow">
+          <StyledLink title="Cutaway">
             <Logo {...logoProps} />
           </StyledLink>
         </Link>

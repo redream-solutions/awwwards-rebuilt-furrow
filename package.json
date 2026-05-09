@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "cross-env NODE_OPTIONS=--openssl-legacy-provider next dev",
+    "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider next build",
     "start": "next start"
   },
   "husky": {
@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "babel-plugin-styled-components": "^1.11.1",
+    "cross-env": "^10.1.0",
     "eslint": "^7.8.1",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",

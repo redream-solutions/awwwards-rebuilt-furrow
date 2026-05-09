@@ -8,11 +8,11 @@ const Content = () => {
       <ContentSection>
         <TextWrapper>
           <Text>
-            Great stories don’t just happen—
+            The best frame in the sequence is never an accident&mdash;
             <br />
-            they need to be uncovered. And we dig deep to discover the great
-            stories that lie just below the surface. Dirt under our fingernails
-            and all.
+            it&apos;s a decision. We build trailers, promos, and editorial
+            campaigns where every cut earns its place and every second moves the
+            audience.
           </Text>
         </TextWrapper>
       </ContentSection>

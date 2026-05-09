@@ -37,15 +37,17 @@ const About = () => {
       <ContentSection>
         <TextWrapper>
           <h2>
-            Furrow is an integrated, full-service creative studio offering video
-            production, creative development, and post-production services.
+            Cutaway is a full-service editorial studio specialising in trailers,
+            promos, and long-form narrative campaigns for film, television, and
+            streaming.
           </h2>
           <p>
-            Everybody’s got a story. And we don’t stop until we’ve uncovered
-            what makes yours worth telling. Whether it’s working directly with
-            you, an agency partner, or putting the finishing touches on
-            something special, we’re ready to dig in and get our hands dirty—are
-            you?
+            Every story has a single frame that changes everything. Our job is
+            to find it, build toward it, and make sure the audience feels it
+            before they know why. Whether we&apos;re cutting a theatrical
+            trailer from scratch, finishing a broadcast campaign, or partnering
+            with your in-house team to push the edit further&mdash;we&apos;re
+            ready to go frame by frame until it&apos;s exactly right.
           </p>
         </TextWrapper>
         <ServicesWrapper>

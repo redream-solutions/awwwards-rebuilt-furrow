@@ -13,24 +13,24 @@ const Contact = () => {
         <div className="column">
           <a
             className="contact-text"
-            href="tel:+1.902.417.0634"
+            href="tel:+1.310.555.0194"
             onMouseEnter={addCursorBorder}
             onMouseLeave={removeCursorBorder}
           >
-            +1.902.417.0634
+            +1.310.555.0194
           </a>
           <br />
           <a
             className="contact-text"
-            href="mailto:info@furrow.studio"
+            href="mailto:hello@cutaway.studio"
             onMouseEnter={addCursorBorder}
             onMouseLeave={removeCursorBorder}
           >
-            info@furrow.studio
+            hello@cutaway.studio
           </a>
         </div>
         <address className="column contact-text">
-          15 Camburhill Ct Unit C<br /> Charlottetown, PE C1E 0E2
+          1200 Cahuenga Blvd Suite 4<br /> Los Angeles, CA 90038
         </address>
         <SocialMedia className="column" />
       </ContactSection>

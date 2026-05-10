@@ -10,7 +10,7 @@ const SiteOfTheDay = () => {
 
   return (
     <Container onMouseEnter={addCursorBorder} onMouseLeave={removeCursorBorder}>
-      <Link href="https://www.awwwards.com" passHref>
+      <Link href="https://www.awwwards.com" passHref legacyBehavior>
         <a target="_blank">
           <svg width="53.08" height="171.358">
             <path fill={theme.text} d="M0 0h53.08v171.358H0z"></path>

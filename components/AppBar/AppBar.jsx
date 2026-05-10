@@ -73,7 +73,7 @@ const AppBar = props => {
       {...rootProps}
     >
       <Container>
-        <Link href="/" passHref>
+        <Link href="/" passHref legacyBehavior>
           <StyledLink title="Cutaway">
             <Logo {...logoProps} />
           </StyledLink>

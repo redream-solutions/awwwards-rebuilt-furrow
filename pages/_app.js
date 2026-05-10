@@ -37,7 +37,6 @@ const App = ({ Component, pageProps }) => {
       <Head>
         <title>Cutaway — Trailers, Promos & Editorial</title>
         <link rel="icon" href="/favicon.png" />
-        <link rel="stylesheet" href="https://use.typekit.net/yzi3byl.css" />
       </Head>
       <style jsx global>{`
         @font-face {

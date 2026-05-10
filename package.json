@@ -1,10 +1,10 @@
 {
-  "name": "awwwards-rebuilt-furrow",
+  "name": "cutaway",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS=--openssl-legacy-provider next dev",
-    "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider next build",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start"
   },
   "husky": {
@@ -18,16 +18,14 @@
     ]
   },
   "dependencies": {
-    "framer-motion": "^2.9.4",
-    "next": "10.0.1",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
-    "react-intersection-observer": "^8.30.3",
-    "styled-components": "^5.2.0"
+    "framer-motion": "^11.11.0",
+    "next": "^14.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-intersection-observer": "^9.13.0",
+    "styled-components": "^5.3.11"
   },
   "devDependencies": {
-    "babel-plugin-styled-components": "^1.11.1",
-    "cross-env": "^10.1.0",
     "eslint": "^7.8.1",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",

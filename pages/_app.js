@@ -10,7 +10,7 @@ import lightTheme from '../styles/themes/light';
 import AppBar from '../components/AppBar';
 import Cursor from '../components/Cursor';
 import Menu from '../components/Menu';
-import SiteOfTheDay from '../components/SiteOfTheDay';
+// import SiteOfTheDay from '../components/SiteOfTheDay';
 
 const themes = {
   dark: darkTheme,

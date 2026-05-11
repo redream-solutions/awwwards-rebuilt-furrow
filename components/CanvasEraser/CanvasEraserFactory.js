@@ -290,7 +290,12 @@ const factory = () => {
   };
 
   const clear = () => {
-    if (!_context || !_data || typeof _data.numParts !== 'number' || !_data.parts) {
+    if (
+      !_context ||
+      !_data ||
+      typeof _data.numParts !== 'number' ||
+      !_data.parts
+    ) {
       return;
     }
 

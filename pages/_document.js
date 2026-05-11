@@ -31,10 +31,7 @@ export default class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1"
-          />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="stylesheet" href="https://use.typekit.net/yzi3byl.css" />
         </Head>
         <body>

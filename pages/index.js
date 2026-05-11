@@ -4,6 +4,7 @@ import ContentSection from '../components/Home/Content';
 import FeaturedSection from '../components/Home/FeaturedProject';
 import AboutSection from '../components/Home/About';
 import ContactSection from '../components/Home/Contact';
+import DesignCredit from '../components/Home/DesignCredit';
 import Footer from '../components/Home/Footer';
 
 const Home = () => {
@@ -14,6 +15,7 @@ const Home = () => {
       <FeaturedSection />
       <AboutSection />
       <ContactSection />
+      <DesignCredit />
       <Footer />
     </>
   );

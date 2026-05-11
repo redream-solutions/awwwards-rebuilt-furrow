@@ -60,7 +60,7 @@ export const ProjectInfo = styled(motion.div)`
 
   ${({ theme }) => theme.breakpoints.small`
     margin-left: 0;
-    width: 83.333%;
+    width: 100%;
 
     & .project-info {
       display: none;
@@ -97,8 +97,11 @@ export const ProjectTitle = styled(motion.h1)`
   ${({ theme }) => theme.breakpoints.tablet`
     top: 166px;
     left: 0;
-    font-size: 3.75rem;
+    font-size: clamp(2.25rem, 10vw, 3.75rem);
     line-height: 0.7166666667;
+    max-width: 100%;
+    padding-right: 8px;
+    box-sizing: border-box;
 
     & .arrow {
       margin: 10px 0 0 2px;
@@ -127,6 +130,8 @@ export const VideoPreview = styled.div`
 
   ${({ theme }) => theme.breakpoints.tablet`
     height: 190px;
+    width: calc(100% + 40px);
+    margin-left: -20px;
   `};
 `;
 
@@ -173,10 +178,21 @@ export const MenuButton = styled(DefaultMenuButton)`
     height: 47px;
     max-width: 215px;
     padding: 12px 20px;
+    text-align: center;
+
+    &::before,
+    &::after {
+      display: none;
+    }
 
     & span {
       font-size: 1.125rem;
       line-height: 1.2777777778;
+      position: static;
+      transform: none;
+      display: inline;
+      opacity: 1;
+      pointer-events: auto;
     }
   `};
 `;

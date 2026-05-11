@@ -65,7 +65,7 @@ const App = ({ Component, pageProps }) => {
               <Menu />
               <Component {...pageProps} />
               <Cursor />
-              <SiteOfTheDay />
+              {/* <SiteOfTheDay /> */}
             </ThemedApp>
           </CursorContextProvider>
         </MenuContextProvider>

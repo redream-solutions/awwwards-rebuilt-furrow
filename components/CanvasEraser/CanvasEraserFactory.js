@@ -15,6 +15,17 @@ const factory = () => {
   let _context = null;
   let _data = {};
 
+  const _clientToCanvas = (clientX, clientY) => {
+    if (!_canvas) return { x: 0, y: 0 };
+    const rect = _canvas.getBoundingClientRect();
+    const rw = rect.width || 1;
+    const rh = rect.height || 1;
+    return {
+      x: ((clientX - rect.left) / rw) * _canvas.width,
+      y: ((clientY - rect.top) / rh) * _canvas.height,
+    };
+  };
+
   const _handleEraserProgress = (currentX, currentY) => {
     const {
       colParts,
@@ -56,9 +67,11 @@ const factory = () => {
   const _onMouseMove = event => {
     event.preventDefault();
 
-    const { enabled, posX, posY, scaleRatio, touchX, touchY } = _data;
-    const currentX = (event.pageX - posX) * scaleRatio;
-    const currentY = (event.pageY - posY) * scaleRatio;
+    const { enabled, touchX, touchY } = _data;
+    const { x: currentX, y: currentY } = _clientToCanvas(
+      event.clientX,
+      event.clientY,
+    );
 
     if (enabled) {
       _handleEraserProgress(currentX, currentY);
@@ -75,9 +88,11 @@ const factory = () => {
   const _onMouseDown = event => {
     event.preventDefault();
 
-    const { enabled, posX, posY, scaleRatio } = _data;
-    const currentX = (event.pageX - posX) * scaleRatio;
-    const currentY = (event.pageY - posY) * scaleRatio;
+    const { enabled } = _data;
+    const { x: currentX, y: currentY } = _clientToCanvas(
+      event.clientX,
+      event.clientY,
+    );
 
     _data.touchDown = true;
     _data.touchX = currentX;
@@ -98,9 +113,11 @@ const factory = () => {
   const _onMouseClick = event => {
     event.preventDefault();
 
-    const { enabled, posX, posY, scaleRatio } = _data;
-    const currentX = (event.pageX - posX) * scaleRatio;
-    const currentY = (event.pageY - posY) * scaleRatio;
+    const { enabled } = _data;
+    const { x: currentX, y: currentY } = _clientToCanvas(
+      event.clientX,
+      event.clientY,
+    );
 
     _data.touchDown = true;
     _data.touchX = currentX;
@@ -118,6 +135,68 @@ const factory = () => {
     _canvas.addEventListener('mousemove', _onMouseMove);
   };
 
+  const _detachTouchStroke = () => {
+    document.removeEventListener('touchmove', _onTouchMove);
+    document.removeEventListener('touchend', _onTouchEnd);
+    document.removeEventListener('touchcancel', _onTouchEnd);
+    _data.touchDown = false;
+  };
+
+  const _onTouchMove = event => {
+    if (!event.touches || event.touches.length === 0) return;
+    event.preventDefault();
+
+    const { enabled, touchX, touchY } = _data;
+    const touch = event.touches[0];
+    const { x: currentX, y: currentY } = _clientToCanvas(
+      touch.clientX,
+      touch.clientY,
+    );
+
+    if (enabled) {
+      _handleEraserProgress(currentX, currentY);
+      _context.beginPath();
+      _context.moveTo(touchX, touchY);
+      _context.lineTo(currentX, currentY);
+      _context.stroke();
+    }
+
+    _data.touchX = currentX;
+    _data.touchY = currentY;
+  };
+
+  const _onTouchEnd = () => {
+    _detachTouchStroke();
+  };
+
+  const _onTouchStart = event => {
+    if (!event.touches || event.touches.length !== 1) return;
+    event.preventDefault();
+
+    const { enabled } = _data;
+    const touch = event.touches[0];
+    const { x: currentX, y: currentY } = _clientToCanvas(
+      touch.clientX,
+      touch.clientY,
+    );
+
+    _data.touchDown = true;
+    _data.touchX = currentX;
+    _data.touchY = currentY;
+
+    if (enabled) {
+      _handleEraserProgress(currentX, currentY);
+      _context.beginPath();
+      _context.moveTo(currentX - 1, currentY);
+      _context.lineTo(currentX, currentY);
+      _context.stroke();
+    }
+
+    document.addEventListener('touchmove', _onTouchMove, { passive: false });
+    document.addEventListener('touchend', _onTouchEnd);
+    document.addEventListener('touchcancel', _onTouchEnd);
+  };
+
   const init = (source, options = {}) => {
     if (!source) {
       throw new Error(
@@ -127,6 +206,14 @@ const factory = () => {
 
     const currentOptions = { ...DEFAULT_OPTIONS, ...options };
     const { size, background } = currentOptions;
+
+    if (_canvas === source) {
+      _canvas.removeEventListener('mouseenter', _onMouseDown);
+      _canvas.removeEventListener('click', _onMouseClick);
+      _canvas.removeEventListener('touchstart', _onTouchStart, {
+        passive: false,
+      });
+    }
 
     _canvas = source;
     _context = _canvas.getContext('2d');
@@ -170,14 +257,12 @@ const factory = () => {
     // bind events
     _canvas.addEventListener('mouseenter', _onMouseDown);
     _canvas.addEventListener('click', _onMouseClick);
-    // _canvas.addEventListener('touchstart', _onTouchStart);
-    // _canvas.addEventListener('touchmove', _onTouchMove);
-    // _canvas.addEventListener('touchend', _onTouchEnd);
+    _canvas.addEventListener('touchstart', _onTouchStart, { passive: false });
 
     // reset parts
     const parts = [];
-    const colParts = Math.floor(width / size);
-    const numParts = colParts * Math.floor(height / size);
+    const colParts = Math.max(1, Math.floor(width / size));
+    const numParts = colParts * Math.max(1, Math.floor(height / size));
     for (let i = 0; i < numParts; i++) {
       parts.push(1);
     }
@@ -196,27 +281,32 @@ const factory = () => {
       scaleRatio: scaleRatio,
       ratio: 0,
       complete: false,
+      parts,
+      colParts,
+      numParts,
       currentOptions,
       ...currentOptions,
     };
   };
 
   const clear = () => {
+    if (!_context || !_data || typeof _data.numParts !== 'number' || !_data.parts) {
+      return;
+    }
+
     const { w, h, numParts, onComplete } = _data;
 
-    if (_data) {
-      _context.clearRect(0, 0, w, h);
+    _context.clearRect(0, 0, w, h);
 
-      for (let i = 0; i < numParts; i++) {
-        _data.parts[i] = 0;
-      }
+    for (let i = 0; i < numParts; i++) {
+      _data.parts[i] = 0;
+    }
 
-      _data.ratio = numParts;
-      _data.complete = true;
+    _data.ratio = numParts;
+    _data.complete = true;
 
-      if (onComplete) {
-        onComplete();
-      }
+    if (onComplete) {
+      onComplete();
     }
   };
 

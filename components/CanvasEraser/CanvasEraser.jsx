@@ -12,6 +12,7 @@ const CanvasEraser = (props, ref) => {
     background = '#000',
     width,
     height,
+    autoClear = false,
     ...other
   } = props;
 
@@ -48,10 +49,18 @@ const CanvasEraser = (props, ref) => {
   }, []);
 
   React.useEffect(() => {
-    if (canvasEraser) {
-      canvasEraser.init(canvasRef.current, options);
+    if (!canvasEraser || !canvasRef.current) return;
+
+    canvasEraser.init(canvasRef.current, options);
+
+    if (autoClear) {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          canvasEraser.clear();
+        });
+      });
     }
-  }, [canvasEraser, options]);
+  }, [canvasEraser, options, autoClear]);
 
   return <canvas ref={componentRef} {...other} />;
 };

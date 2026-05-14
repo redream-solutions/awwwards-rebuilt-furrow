@@ -26,8 +26,11 @@ const itemTitleAnimation = {
   },
 };
 
+/** No canvas overlay: avoids touch-action / touch listeners blocking page scroll on phones and coarse pointers. */
+const SKIP_HERO_CANVAS_QUERY =
+  '(max-width: 1023px), (hover: none) and (pointer: coarse)';
+
 const Banner = () => {
-  const canvasRef = React.useRef(null);
   const videoRef = React.useRef(null);
   const windowSize = useWindowSize();
   const [viewportSize, setViewportSize] = React.useState({
@@ -36,9 +39,7 @@ const Banner = () => {
   });
   const theme = useStyledTheme();
   const { addCursorBorder, removeCursorBorder } = useCursorStyle();
-  const autoClearOverlay = useMediaQuery(
-    ({ breakpoints }) => `(max-width: ${breakpoints.sizes.tablet}px)`,
-  );
+  const skipHeroCanvas = useMediaQuery(() => SKIP_HERO_CANVAS_QUERY);
 
   React.useEffect(() => {
     if (typeof window === 'undefined') return undefined;
@@ -105,17 +106,16 @@ const Banner = () => {
           preload="auto"
         />
       </VideoContainer>
-      <CanvasEraser
-        ref={canvasRef}
-        width={bannerWidth}
-        height={bannerHeight}
-        size={120}
-        background={theme.background}
-        autoClear={autoClearOverlay}
-        style={autoClearOverlay ? { pointerEvents: 'none' } : undefined}
-        onMouseEnter={addCursorBorder}
-        onMouseLeave={removeCursorBorder}
-      />
+      {!skipHeroCanvas && (
+        <CanvasEraser
+          width={bannerWidth}
+          height={bannerHeight}
+          size={120}
+          background={theme.background}
+          onMouseEnter={addCursorBorder}
+          onMouseLeave={removeCursorBorder}
+        />
+      )}
       <BannerTitle
         variants={titleAnimation}
         initial="initial"

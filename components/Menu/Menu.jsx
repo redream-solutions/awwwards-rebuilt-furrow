@@ -51,6 +51,12 @@ const Menu = () => {
     ({ breakpoints }) => `(max-width:${breakpoints.sizes.small}px)`,
   );
 
+  React.useEffect(() => {
+    if (!isMenuOpen && typeof document !== 'undefined') {
+      document.body.style.removeProperty('overflow-y');
+    }
+  }, [isMenuOpen]);
+
   const handleAnimationComplete = React.useCallback(() => {
     addCursorColor(theme.text);
   }, [addCursorColor, theme.text]);

@@ -17,11 +17,16 @@ const variants = {
 
 const Backdrop = props => {
   React.useEffect(() => {
-    const overflowY = window.getComputedStyle(document.body).overflowY;
-    document.body.style.overflowY = 'hidden';
+    const { body } = document;
+    const previous = body.style.overflowY;
+    body.style.overflowY = 'hidden';
 
     return () => {
-      document.body.style.overflowY = overflowY;
+      if (previous) {
+        body.style.overflowY = previous;
+      } else {
+        body.style.removeProperty('overflow-y');
+      }
     };
   }, []);
 

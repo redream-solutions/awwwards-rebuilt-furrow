@@ -37,6 +37,7 @@ export const VideoContainer = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
+    pointer-events: none;
   }
 `;
 

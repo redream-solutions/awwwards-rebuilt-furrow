@@ -112,6 +112,7 @@ const Banner = () => {
         size={120}
         background={theme.background}
         autoClear={autoClearOverlay}
+        style={autoClearOverlay ? { pointerEvents: 'none' } : undefined}
         onMouseEnter={addCursorBorder}
         onMouseLeave={removeCursorBorder}
       />

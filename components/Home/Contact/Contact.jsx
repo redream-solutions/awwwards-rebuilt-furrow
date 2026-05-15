@@ -13,7 +13,7 @@ const Contact = () => {
         <div className="column">
           <a
             className="contact-text"
-            href="tel:+1.310.555.0194"
+            href="tel:+1.415.555.0127"
             onMouseEnter={addCursorBorder}
             onMouseLeave={removeCursorBorder}
           >

@@ -1,11 +1,11 @@
 import React from 'react';
-import useForkRef from '../../hooks/useForkRef';
 import canvasEraserFactory from './CanvasEraserFactory';
 
 const CanvasEraser = (props, ref) => {
   const {
     completeRatio = 1,
     enabled = true,
+    nativeTouch = true,
     onComplete = null,
     onProgress = null,
     size = 40,
@@ -18,13 +18,13 @@ const CanvasEraser = (props, ref) => {
 
   const [canvasEraser, setCanvasEraser] = React.useState(null);
   const canvasRef = React.useRef(null);
-  const componentRef = useForkRef(canvasRef, ref);
 
   const options = React.useMemo(
     () => ({
       background,
       completeRatio,
       enabled,
+      nativeTouch,
       onComplete,
       onProgress,
       size,
@@ -35,6 +35,7 @@ const CanvasEraser = (props, ref) => {
       background,
       completeRatio,
       enabled,
+      nativeTouch,
       onComplete,
       onProgress,
       size,
@@ -62,7 +63,19 @@ const CanvasEraser = (props, ref) => {
     }
   }, [canvasEraser, options, autoClear]);
 
-  return <canvas ref={componentRef} {...other} />;
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      stroke: (clientX, clientY, strokeOptions) =>
+        canvasEraser?.stroke(clientX, clientY, strokeOptions),
+      clear: () => canvasEraser?.clear(),
+      reset: () => canvasEraser?.reset(),
+      getCanvas: () => canvasRef.current,
+    }),
+    [canvasEraser],
+  );
+
+  return <canvas ref={canvasRef} {...other} />;
 };
 
 export default React.forwardRef(CanvasEraser);

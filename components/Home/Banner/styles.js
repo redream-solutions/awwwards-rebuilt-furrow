@@ -17,7 +17,15 @@ export const BannerSection = styled.section`
     z-index: 1;
     height: 100%;
     width: 100%;
+  }
+
+  &[data-input='mouse'] canvas {
     touch-action: none;
+  }
+
+  &[data-input='handle'] canvas {
+    pointer-events: none;
+    touch-action: auto;
   }
 
   ${({ theme }) => theme.breakpoints.tablet`

@@ -2,6 +2,7 @@ const DEFAULT_OPTIONS = {
   background: '#000',
   completeRatio: 1,
   enabled: true,
+  nativeTouch: true,
   onComplete: null,
   onProgress: null,
   size: 40,
@@ -64,19 +65,20 @@ const factory = () => {
     }
   };
 
-  const _onMouseMove = event => {
-    event.preventDefault();
+  const _strokeAt = (clientX, clientY, { begin = false } = {}) => {
+    if (!_context) return;
 
     const { enabled, touchX, touchY } = _data;
-    const { x: currentX, y: currentY } = _clientToCanvas(
-      event.clientX,
-      event.clientY,
-    );
+    const { x: currentX, y: currentY } = _clientToCanvas(clientX, clientY);
 
     if (enabled) {
       _handleEraserProgress(currentX, currentY);
       _context.beginPath();
-      _context.moveTo(touchX, touchY);
+      if (begin) {
+        _context.moveTo(currentX - 1, currentY);
+      } else {
+        _context.moveTo(touchX, touchY);
+      }
       _context.lineTo(currentX, currentY);
       _context.stroke();
     }
@@ -85,53 +87,28 @@ const factory = () => {
     _data.touchY = currentY;
   };
 
+  const stroke = (clientX, clientY, options = {}) => {
+    _strokeAt(clientX, clientY, options);
+  };
+
+  const _onMouseMove = event => {
+    event.preventDefault();
+    _strokeAt(event.clientX, event.clientY);
+  };
+
   const _onMouseDown = event => {
     event.preventDefault();
 
-    const { enabled } = _data;
-    const { x: currentX, y: currentY } = _clientToCanvas(
-      event.clientX,
-      event.clientY,
-    );
-
     _data.touchDown = true;
-    _data.touchX = currentX;
-    _data.touchY = currentY;
-
-    if (enabled) {
-      _handleEraserProgress(currentX, currentY);
-
-      _context.beginPath();
-      _context.moveTo(currentX - 1, currentY);
-      _context.lineTo(currentX, currentY);
-      _context.stroke();
-    }
-
+    _strokeAt(event.clientX, event.clientY, { begin: true });
     _canvas.addEventListener('mousemove', _onMouseMove);
   };
 
   const _onMouseClick = event => {
     event.preventDefault();
 
-    const { enabled } = _data;
-    const { x: currentX, y: currentY } = _clientToCanvas(
-      event.clientX,
-      event.clientY,
-    );
-
     _data.touchDown = true;
-    _data.touchX = currentX;
-    _data.touchY = currentY;
-
-    if (enabled) {
-      _handleEraserProgress(currentX, currentY);
-
-      _context.beginPath();
-      _context.moveTo(currentX - 1, currentY);
-      _context.lineTo(currentX, currentY);
-      _context.stroke();
-    }
-
+    _strokeAt(event.clientX, event.clientY, { begin: true });
     _canvas.addEventListener('mousemove', _onMouseMove);
   };
 
@@ -146,23 +123,8 @@ const factory = () => {
     if (!event.touches || event.touches.length === 0) return;
     event.preventDefault();
 
-    const { enabled, touchX, touchY } = _data;
     const touch = event.touches[0];
-    const { x: currentX, y: currentY } = _clientToCanvas(
-      touch.clientX,
-      touch.clientY,
-    );
-
-    if (enabled) {
-      _handleEraserProgress(currentX, currentY);
-      _context.beginPath();
-      _context.moveTo(touchX, touchY);
-      _context.lineTo(currentX, currentY);
-      _context.stroke();
-    }
-
-    _data.touchX = currentX;
-    _data.touchY = currentY;
+    _strokeAt(touch.clientX, touch.clientY);
   };
 
   const _onTouchEnd = () => {
@@ -173,24 +135,9 @@ const factory = () => {
     if (!event.touches || event.touches.length !== 1) return;
     event.preventDefault();
 
-    const { enabled } = _data;
     const touch = event.touches[0];
-    const { x: currentX, y: currentY } = _clientToCanvas(
-      touch.clientX,
-      touch.clientY,
-    );
-
     _data.touchDown = true;
-    _data.touchX = currentX;
-    _data.touchY = currentY;
-
-    if (enabled) {
-      _handleEraserProgress(currentX, currentY);
-      _context.beginPath();
-      _context.moveTo(currentX - 1, currentY);
-      _context.lineTo(currentX, currentY);
-      _context.stroke();
-    }
+    _strokeAt(touch.clientX, touch.clientY, { begin: true });
 
     document.addEventListener('touchmove', _onTouchMove, { passive: false });
     document.addEventListener('touchend', _onTouchEnd);
@@ -205,14 +152,16 @@ const factory = () => {
     }
 
     const currentOptions = { ...DEFAULT_OPTIONS, ...options };
-    const { size, background } = currentOptions;
+    const { size, background, nativeTouch } = currentOptions;
 
     if (_canvas === source) {
       _canvas.removeEventListener('mouseenter', _onMouseDown);
       _canvas.removeEventListener('click', _onMouseClick);
-      _canvas.removeEventListener('touchstart', _onTouchStart, {
-        passive: false,
-      });
+      if (_data.nativeTouch) {
+        _canvas.removeEventListener('touchstart', _onTouchStart, {
+          passive: false,
+        });
+      }
     }
 
     _canvas = source;
@@ -257,7 +206,9 @@ const factory = () => {
     // bind events
     _canvas.addEventListener('mouseenter', _onMouseDown);
     _canvas.addEventListener('click', _onMouseClick);
-    _canvas.addEventListener('touchstart', _onTouchStart, { passive: false });
+    if (nativeTouch) {
+      _canvas.addEventListener('touchstart', _onTouchStart, { passive: false });
+    }
 
     // reset parts
     const parts = [];
@@ -335,6 +286,7 @@ const factory = () => {
     init,
     clear,
     reset,
+    stroke,
   };
 };
 

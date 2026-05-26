@@ -108,6 +108,13 @@ export default createGlobalStyle`
   }
 
   ${({ theme }) => theme.breakpoints.small`
+    html,
+    body {
+      touch-action: pan-y;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: auto;
+    }
+
     a {
       cursor:pointer;
     }

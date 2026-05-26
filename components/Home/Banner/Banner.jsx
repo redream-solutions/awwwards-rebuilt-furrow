@@ -14,7 +14,13 @@ import CanvasEraser from '../../CanvasEraser';
 
 import MobileEraserHandle from '../../CanvasEraser/MobileEraserHandle';
 
-import { BannerSection, BannerTitle, VideoContainer } from './styles';
+import {
+  BannerSection,
+  BannerTitle,
+  EraserCanvasWrap,
+  EraserScrollLayer,
+  VideoContainer,
+} from './styles';
 
 const titleAnimation = {
   animate: {
@@ -24,15 +30,24 @@ const titleAnimation = {
   },
 };
 
-const itemTitleAnimation = {
+const itemTitleAnimationDesktop = {
   initial: { y: '100vh' },
-
   animate: {
     y: 0,
-
     transition: {
       duration: 0.9,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+};
 
+/** 100vh is taller than the visible viewport on mobile Chrome and clips "CUT". */
+const itemTitleAnimationMobile = {
+  initial: { y: '105%' },
+  animate: {
+    y: 0,
+    transition: {
+      duration: 0.9,
       ease: [0.4, 0, 0.2, 1],
     },
   },
@@ -40,8 +55,8 @@ const itemTitleAnimation = {
 
 /** Mobile / coarse pointer: handle-driven eraser so the canvas does not block scroll. */
 
-const MOBILE_ERASER_QUERY =
-  '(max-width: 1023px), (hover: none) and (pointer: coarse)';
+/** Width-only: Chrome mobile often reports pointer:fine, which skipped handle mode. */
+const MOBILE_ERASER_QUERY = '(max-width: 1023px)';
 
 const Banner = () => {
   const videoRef = React.useRef(null);
@@ -106,8 +121,11 @@ const Banner = () => {
 
   const sectionStyle =
     bannerHeight != null
-      ? { height: bannerHeight, minHeight: bannerHeight }
-      : { height: '100vh', minHeight: '100vh' };
+      ? {
+          height: bannerHeight,
+          minHeight: useMobileEraser ? '100dvh' : bannerHeight,
+        }
+      : { height: '100dvh', minHeight: '100dvh' };
 
   React.useEffect(() => {
     const video = videoRef.current;
@@ -150,35 +168,57 @@ const Banner = () => {
         />
       </VideoContainer>
 
-      <CanvasEraser
-        ref={eraserRef}
-        width={bannerWidth}
-        height={bannerHeight}
-        size={120}
-        background={theme.background}
-        nativeTouch={!useMobileEraser}
-        style={
-          useMobileEraser
-            ? { pointerEvents: 'none', touchAction: 'pan-y' }
-            : undefined
-        }
-        {...(!useMobileEraser && {
-          onMouseEnter: addCursorBorder,
-
-          onMouseLeave: removeCursorBorder,
-        })}
-      />
-
-      {useMobileEraser && <MobileEraserHandle eraserRef={eraserRef} />}
+      {useMobileEraser ? (
+        <>
+          <EraserCanvasWrap>
+            <CanvasEraser
+              ref={eraserRef}
+              width={bannerWidth}
+              height={bannerHeight}
+              size={120}
+              background={theme.background}
+              nativeTouch={false}
+            />
+          </EraserCanvasWrap>
+          <EraserScrollLayer aria-hidden />
+          <MobileEraserHandle eraserRef={eraserRef} />
+        </>
+      ) : (
+        <CanvasEraser
+          ref={eraserRef}
+          width={bannerWidth}
+          height={bannerHeight}
+          size={120}
+          background={theme.background}
+          nativeTouch
+          onMouseEnter={addCursorBorder}
+          onMouseLeave={removeCursorBorder}
+        />
+      )}
 
       <BannerTitle
         variants={titleAnimation}
         initial="initial"
         animate="animate"
       >
-        <motion.span variants={itemTitleAnimation}>CUT</motion.span>
-
-        <motion.span variants={itemTitleAnimation}>SHARP</motion.span>
+        <motion.span
+          variants={
+            useMobileEraser
+              ? itemTitleAnimationMobile
+              : itemTitleAnimationDesktop
+          }
+        >
+          CUT
+        </motion.span>
+        <motion.span
+          variants={
+            useMobileEraser
+              ? itemTitleAnimationMobile
+              : itemTitleAnimationDesktop
+          }
+        >
+          SHARP
+        </motion.span>
       </BannerTitle>
     </BannerSection>
   );

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const HandleRoot = styled.div`
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   width: 60px;
   height: 60px;
   touch-action: none;

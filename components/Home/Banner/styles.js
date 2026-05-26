@@ -4,10 +4,12 @@ import { motion } from 'framer-motion';
 export const BannerSection = styled.section`
   position: relative;
   height: 100vh;
+  height: 100dvh;
   width: 100%;
   margin-bottom: 305px;
   background: ${({ theme }) => theme.background};
   isolation: isolate;
+  overflow: visible;
 
   & canvas {
     display: block;
@@ -28,13 +30,36 @@ export const BannerSection = styled.section`
   }
 
   &[data-input='handle'] canvas {
-    pointer-events: none;
+    pointer-events: none !important;
     touch-action: pan-y;
   }
 
   ${({ theme }) => theme.breakpoints.tablet`
     margin-bottom: 90px;
   `};
+`;
+
+/** Mobile browsers often eat touches on <canvas>; this layer passes swipes to the page. */
+export const EraserScrollLayer = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: auto;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+`;
+
+export const EraserCanvasWrap = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  touch-action: pan-y;
+
+  & canvas {
+    pointer-events: none !important;
+    touch-action: pan-y;
+  }
 `;
 
 export const VideoContainer = styled.div`
@@ -62,10 +87,12 @@ export const BannerTitle = styled(motion.h1)`
   font-size: 26.25rem;
   pointer-events: none;
   line-height: 0.6714285714;
+  overflow: visible;
 
   & span {
     display: block;
     will-change: transform;
+    overflow: visible;
   }
 
   ${({ theme }) => theme.breakpoints.small`
@@ -76,23 +103,22 @@ export const BannerTitle = styled(motion.h1)`
       max(12px, env(safe-area-inset-left, 0px));
     box-sizing: border-box;
     font-size: clamp(4rem, 14vw, 17.5rem);
-    line-height: 0.6821428571;
-    overflow-x: hidden;
-    overflow-y: visible;
+    line-height: 0.85;
+    overflow: visible;
   `};
 
   ${({ theme }) => theme.breakpoints.tablet`
     bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
     font-size: clamp(4rem, 22vw, 10rem);
-    line-height: 0.68125;
+    line-height: 0.85;
+    overflow: visible;
   `};
 
   ${({ theme }) => theme.breakpoints.mobile`
     bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
     font-size: clamp(2.75rem, 14vw, 4.5rem);
-    line-height: 0.72;
-    overflow-x: hidden;
-    overflow-y: visible;
-    padding-top: 0.12em;
+    line-height: 0.85;
+    overflow: visible;
+    padding-top: 0.2em;
   `};
 `;

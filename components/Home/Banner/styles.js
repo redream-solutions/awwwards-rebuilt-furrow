@@ -23,9 +23,13 @@ export const BannerSection = styled.section`
     touch-action: none;
   }
 
+  &[data-input='handle'] {
+    touch-action: pan-y;
+  }
+
   &[data-input='handle'] canvas {
     pointer-events: none;
-    touch-action: auto;
+    touch-action: pan-y;
   }
 
   ${({ theme }) => theme.breakpoints.tablet`
@@ -73,7 +77,8 @@ export const BannerTitle = styled(motion.h1)`
     box-sizing: border-box;
     font-size: clamp(4rem, 14vw, 17.5rem);
     line-height: 0.6821428571;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: visible;
   `};
 
   ${({ theme }) => theme.breakpoints.tablet`
@@ -86,5 +91,8 @@ export const BannerTitle = styled(motion.h1)`
     bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
     font-size: clamp(2.75rem, 14vw, 4.5rem);
     line-height: 0.72;
+    overflow-x: hidden;
+    overflow-y: visible;
+    padding-top: 0.12em;
   `};
 `;

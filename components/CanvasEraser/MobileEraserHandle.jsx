@@ -31,7 +31,7 @@ const sectionToClient = (x, y, sectionRect) => ({
   y: y + sectionRect.top,
 });
 
-const MobileEraserHandle = ({ eraserRef, onActiveChange }) => {
+const MobileEraserHandle = ({ eraserRef }) => {
   const handleRef = React.useRef(null);
   const dragRef = React.useRef({
     active: false,
@@ -40,14 +40,6 @@ const MobileEraserHandle = ({ eraserRef, onActiveChange }) => {
   });
   const [position, setPosition] = React.useState(null);
   const [isActive, setIsActive] = React.useState(false);
-
-  const setActive = React.useCallback(
-    active => {
-      setIsActive(active);
-      onActiveChange?.(active);
-    },
-    [onActiveChange],
-  );
 
   const getDefaultPosition = React.useCallback(() => {
     const canvas = eraserRef.current?.getCanvas?.();
@@ -129,9 +121,9 @@ const MobileEraserHandle = ({ eraserRef, onActiveChange }) => {
     dragRef.current.active = false;
     dragRef.current.pointerId = null;
     dragRef.current.beginStroke = true;
-    setActive(false);
+    setIsActive(false);
     snapToDefault();
-  }, [setActive, snapToDefault]);
+  }, [snapToDefault]);
 
   React.useEffect(() => {
     const onPointerMove = event => {
@@ -165,6 +157,14 @@ const MobileEraserHandle = ({ eraserRef, onActiveChange }) => {
     };
   }, [constrainPosition, endDrag, strokeAtHandleCenter]);
 
+  const onLostPointerCapture = React.useCallback(
+    event => {
+      if (event.pointerId !== dragRef.current.pointerId) return;
+      endDrag();
+    },
+    [endDrag],
+  );
+
   const onPointerDown = event => {
     if (dragRef.current.active) return;
 
@@ -175,7 +175,7 @@ const MobileEraserHandle = ({ eraserRef, onActiveChange }) => {
     dragRef.current.active = true;
     dragRef.current.pointerId = event.pointerId;
     dragRef.current.beginStroke = true;
-    setActive(true);
+    setIsActive(true);
 
     const next = constrainPosition(event.clientX, event.clientY);
     setPosition(next);
@@ -191,6 +191,7 @@ const MobileEraserHandle = ({ eraserRef, onActiveChange }) => {
       data-active={isActive}
       style={{ left: position.x, top: position.y }}
       onPointerDown={onPointerDown}
+      onLostPointerCapture={onLostPointerCapture}
       role="slider"
       aria-label="Eraser"
     >

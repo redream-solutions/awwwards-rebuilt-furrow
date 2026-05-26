@@ -154,14 +154,12 @@ const factory = () => {
     const currentOptions = { ...DEFAULT_OPTIONS, ...options };
     const { size, background, nativeTouch } = currentOptions;
 
-    if (_canvas === source) {
+    if (_canvas === source && _data.nativeTouch !== false) {
       _canvas.removeEventListener('mouseenter', _onMouseDown);
       _canvas.removeEventListener('click', _onMouseClick);
-      if (_data.nativeTouch) {
-        _canvas.removeEventListener('touchstart', _onTouchStart, {
-          passive: false,
-        });
-      }
+      _canvas.removeEventListener('touchstart', _onTouchStart, {
+        passive: false,
+      });
     }
 
     _canvas = source;
@@ -203,10 +201,10 @@ const factory = () => {
     _context.lineWidth = size;
     _context.lineCap = 'round';
 
-    // bind events
-    _canvas.addEventListener('mouseenter', _onMouseDown);
-    _canvas.addEventListener('click', _onMouseClick);
+    // bind events (handle mode uses programmatic stroke only)
     if (nativeTouch) {
+      _canvas.addEventListener('mouseenter', _onMouseDown);
+      _canvas.addEventListener('click', _onMouseClick);
       _canvas.addEventListener('touchstart', _onTouchStart, { passive: false });
     }
 

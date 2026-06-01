@@ -102,20 +102,14 @@ const Banner = () => {
 
     vv?.addEventListener('resize', read);
 
-    vv?.addEventListener('scroll', read);
-
     window.addEventListener('resize', read);
 
     return () => {
       vv?.removeEventListener('resize', read);
 
-      vv?.removeEventListener('scroll', read);
-
       window.removeEventListener('resize', read);
     };
   }, []);
-
-  const bannerWidth = viewportSize.width ?? windowSize.width;
 
   const bannerHeight = viewportSize.height ?? windowSize.height;
 
@@ -173,8 +167,6 @@ const Banner = () => {
           <EraserCanvasWrap>
             <CanvasEraser
               ref={eraserRef}
-              width={bannerWidth}
-              height={bannerHeight}
               size={120}
               background={theme.background}
               nativeTouch={false}
@@ -186,8 +178,6 @@ const Banner = () => {
       ) : (
         <CanvasEraser
           ref={eraserRef}
-          width={bannerWidth}
-          height={bannerHeight}
           size={120}
           background={theme.background}
           nativeTouch

@@ -54,23 +54,6 @@ const MobileEraserHandle = ({ eraserRef }) => {
     );
   }, [eraserRef]);
 
-  React.useEffect(() => {
-    const updateDefault = () => {
-      if (dragRef.current.active) return;
-      const snap = getDefaultPosition();
-      if (snap) setPosition(snap);
-    };
-
-    updateDefault();
-    window.addEventListener('resize', updateDefault);
-    window.visualViewport?.addEventListener('resize', updateDefault);
-
-    return () => {
-      window.removeEventListener('resize', updateDefault);
-      window.visualViewport?.removeEventListener('resize', updateDefault);
-    };
-  }, [getDefaultPosition]);
-
   const constrainPosition = React.useCallback(
     (clientX, clientY) => {
       const canvas = eraserRef.current?.getCanvas?.();
@@ -98,6 +81,57 @@ const MobileEraserHandle = ({ eraserRef }) => {
     [eraserRef],
   );
 
+  const constrainLocalPosition = React.useCallback(
+    local => {
+      const canvas = eraserRef.current?.getCanvas?.();
+      const bounds = getCanvasBounds(canvas);
+      const sectionRect = getSectionRect(canvas);
+      if (!bounds || !sectionRect || !local) return local;
+
+      const half = HANDLE_SIZE / 2;
+      return {
+        x: clamp(
+          local.x,
+          bounds.left - sectionRect.left + half,
+          bounds.right - sectionRect.left - half,
+        ),
+        y: clamp(
+          local.y,
+          bounds.top - sectionRect.top + half,
+          bounds.bottom - sectionRect.top - half,
+        ),
+      };
+    },
+    [eraserRef],
+  );
+
+  React.useEffect(() => {
+    if (position != null) return undefined;
+
+    const initial = getDefaultPosition();
+    if (initial) setPosition(initial);
+
+    return undefined;
+  }, [getDefaultPosition, position]);
+
+  React.useEffect(() => {
+    const onResize = () => {
+      if (dragRef.current.active) return;
+      setPosition(prev => {
+        if (!prev) return getDefaultPosition();
+        return constrainLocalPosition(prev);
+      });
+    };
+
+    window.addEventListener('resize', onResize);
+    window.visualViewport?.addEventListener('resize', onResize);
+
+    return () => {
+      window.removeEventListener('resize', onResize);
+      window.visualViewport?.removeEventListener('resize', onResize);
+    };
+  }, [constrainLocalPosition, getDefaultPosition]);
+
   const strokeAtHandleCenter = React.useCallback(
     (localX, localY, begin) => {
       const canvas = eraserRef.current?.getCanvas?.();
@@ -110,11 +144,6 @@ const MobileEraserHandle = ({ eraserRef }) => {
     [eraserRef],
   );
 
-  const snapToDefault = React.useCallback(() => {
-    const snap = getDefaultPosition();
-    if (snap) setPosition(snap);
-  }, [getDefaultPosition]);
-
   const endDrag = React.useCallback(() => {
     if (!dragRef.current.active) return;
 
@@ -122,8 +151,7 @@ const MobileEraserHandle = ({ eraserRef }) => {
     dragRef.current.pointerId = null;
     dragRef.current.beginStroke = true;
     setIsActive(false);
-    snapToDefault();
-  }, [snapToDefault]);
+  }, []);
 
   React.useEffect(() => {
     const onPointerMove = event => {

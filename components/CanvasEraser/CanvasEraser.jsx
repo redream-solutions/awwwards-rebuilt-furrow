@@ -10,8 +10,6 @@ const CanvasEraser = (props, ref) => {
     onProgress = null,
     size = 40,
     background = '#000',
-    width,
-    height,
     autoClear = false,
     ...other
   } = props;
@@ -19,7 +17,7 @@ const CanvasEraser = (props, ref) => {
   const [canvasEraser, setCanvasEraser] = React.useState(null);
   const canvasRef = React.useRef(null);
 
-  const options = React.useMemo(
+  const initOptions = React.useMemo(
     () => ({
       background,
       completeRatio,
@@ -28,8 +26,6 @@ const CanvasEraser = (props, ref) => {
       onComplete,
       onProgress,
       size,
-      width,
-      height,
     }),
     [
       background,
@@ -39,8 +35,6 @@ const CanvasEraser = (props, ref) => {
       onComplete,
       onProgress,
       size,
-      width,
-      height,
     ],
   );
 
@@ -52,7 +46,7 @@ const CanvasEraser = (props, ref) => {
   React.useEffect(() => {
     if (!canvasEraser || !canvasRef.current) return;
 
-    canvasEraser.init(canvasRef.current, options);
+    canvasEraser.init(canvasRef.current, initOptions);
 
     if (autoClear) {
       requestAnimationFrame(() => {
@@ -61,7 +55,7 @@ const CanvasEraser = (props, ref) => {
         });
       });
     }
-  }, [canvasEraser, options, autoClear]);
+  }, [canvasEraser, initOptions, autoClear]);
 
   React.useImperativeHandle(
     ref,

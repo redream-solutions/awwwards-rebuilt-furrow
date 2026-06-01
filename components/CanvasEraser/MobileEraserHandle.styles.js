@@ -8,13 +8,10 @@ export const HandleRoot = styled.div`
   touch-action: none;
   cursor: grab;
   transform: translate(-50%, -50%);
-  transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    top 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s ease,
-    opacity 0.15s ease;
+  transition: transform 0.15s ease, opacity 0.15s ease;
 
   &[data-active='true'] {
     cursor: grabbing;
-    transition: transform 0.15s ease, opacity 0.15s ease;
     transform: translate(-50%, -50%) scale(1.06);
     opacity: 0.95;
   }
